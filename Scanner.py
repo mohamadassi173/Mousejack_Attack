@@ -34,14 +34,13 @@ def getCompanyName(payload):
     elif len(payload) == 6:
         return "amazon mouse or keyboard"
 
-
-def scan(timeout=20):
+radio = nrf24.nrf24(0)
+def scan(timeout=10):
 
     # init the radio
     channel_index = 0
     channels = range(2, 84)
     devices = {}
-    radio = nrf24.nrf24(0)
     radio.enter_promiscuous_mode()
     radio.set_channel(channels[channel_index])
 
@@ -68,13 +67,13 @@ def scan(timeout=20):
         # if found something(payload), 5 = mac address length
         if len(value) >= 5:
             address, payload = value[0:5], value[5:]
+            address.reverse()
             address = ':'.join('{:02X}'.format(x) for x in address)
             payload = ':'.join('{:02X}'.format(x) for x in payload)
             devices[address] = []
             devices[address].append(address)
             devices[address].append(payload)
             devices[address].append(getCompanyName(payload))
-    # print(devices)
     return devices
 
 scan()
