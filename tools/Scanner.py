@@ -2,11 +2,10 @@ from __future__ import print_function, absolute_import
 
 import time
 
-import nrf24
+from lib import nrf24, nrf24_reset
 
 
 def getCompanyName(payload):
-
     # logitech mouse movement packet
     if len(payload) == 10 and payload[0] == '0' and payload[1] == 0xC2:
         return 'logitech Mouse'
@@ -34,9 +33,13 @@ def getCompanyName(payload):
     elif len(payload) == 6:
         return "amazon mouse or keyboard"
 
-radio = nrf24.nrf24(0)
-def scan(timeout=10):
 
+radio = nrf24.nrf24(0)
+
+
+def scan(timeout=60):
+    nrf24_reset.reset_radio(0)
+    print("dongle reset...")
     # init the radio
     channel_index = 0
     channels = range(2, 84)
@@ -60,7 +63,7 @@ def scan(timeout=10):
             last_tune = time.time()
         try:
             # search for payloads in specific channel
-            value = radio.receive_payload()
+            value = radio.receive_payload()  # received packet - 23:23:45:43:13,
         except RuntimeError:
             value = []
 
@@ -68,6 +71,7 @@ def scan(timeout=10):
         if len(value) >= 5:
             address, payload = value[0:5], value[5:]
             address.reverse()
+            print(address)
             address = ':'.join('{:02X}'.format(x) for x in address)
             payload = ':'.join('{:02X}'.format(x) for x in payload)
             devices[address] = []
@@ -75,5 +79,6 @@ def scan(timeout=10):
             devices[address].append(payload)
             devices[address].append(getCompanyName(payload))
     return devices
+
 
 scan()
