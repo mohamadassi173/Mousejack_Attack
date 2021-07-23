@@ -34,24 +34,17 @@ def getCompanyName(payload):
         return "amazon mouse or keyboard"
 
 
-radio = nrf24.nrf24(0)
-
-
-def scan(timeout=60):
-    nrf24_reset.reset_radio(0)
-    print("dongle reset...")
-    # init the radio
+def scan(radio, channels, timeout):
+    # init the radio channel
     channel_index = 0
-    channels = range(2, 84)
-    devices = {}
-    radio.enter_promiscuous_mode()
     radio.set_channel(channels[channel_index])
 
     # set timing
     dwell_time = 0.1
     last_tune = time.time()
     start_time = time.time()
-    radio.enable_lna()
+    device_index = 0
+    devices = {}
 
     # start scanning
     while time.time() - start_time < timeout:
@@ -72,13 +65,11 @@ def scan(timeout=60):
             address, payload = value[0:5], value[5:]
             address.reverse()
             print(address)
+            devices[device_index] = []
+            devices[device_index].append(address.tolist())
             address = ':'.join('{:02X}'.format(x) for x in address)
             payload = ':'.join('{:02X}'.format(x) for x in payload)
-            devices[address] = []
-            devices[address].append(address)
-            devices[address].append(payload)
-            devices[address].append(getCompanyName(payload))
+            devices[device_index].append(payload)
+            devices[device_index].append(getCompanyName(payload))
+            device_index += 1
     return devices
-
-
-scan()

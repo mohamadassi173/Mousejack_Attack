@@ -19,9 +19,6 @@ def attacker(address, radio, channels, attack_id):
         print("lol")
 
 
-    
-
-    
     # radio.transmit_payload([0, 193, 0, 21, 0, 0, 0, 0, 0, 42])  # r letter - for testing purpose
     # radio.transmit_payload([0, 193, 0, 0, 0, 0, 0, 0, 0, 63])  # avoid loop - for testing purpose
     # list = {
