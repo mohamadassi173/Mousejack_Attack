@@ -1,5 +1,6 @@
 def payload_keys(key):
     keys = {
+        'ctrl+shift+enter': [0, 193, 3, 40, 0, 0, 0, 0, 0, 20],
         'ctrl+esc': [0, 193, 1, 41, 0, 0, 0, 0, 0, 21],
         'hideDesktop': [0, 193, 8, 7, 0, 0, 0, 0, 0, 48],  # GUI + d
         'run': [0, 193, 8, 21, 0, 0, 0, 0, 0, 34],  # GUI + r

