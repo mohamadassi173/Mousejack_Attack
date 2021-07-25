@@ -1,7 +1,5 @@
 from __future__ import print_function, absolute_import
-
 import time
-
 from lib import nrf24, nrf24_reset
 
 
