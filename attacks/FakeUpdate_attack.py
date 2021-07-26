@@ -14,7 +14,6 @@ class FakeUpdate_attack:
 
     def init_list(self):
         self.payloads_list.append(payload_keys.payload_keys('init'))
-        # add_payload.wait(self.payloads_list, 5)
         add_payload.KeyPL(self.payloads_list, 'hideDesktop')
         add_payload.wait(self.payloads_list, 1)
         add_payload.KeyPL(self.payloads_list, 'ctrl+esc')
