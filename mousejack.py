@@ -33,7 +33,7 @@ class mouseJack:
         # printScanning()
         consolePrint.printDevices()
         for key, val in devices_list.items():
-            print(key, ":", val[0], "(", val[1], ")")
+            print(key, ":", val[0], "(", val[1], ")" , val[2])
         print("choose victim device key from( 0 - ", len(devices_list.items()) - 1, "): ")
         victim_key = int(input())
         print()

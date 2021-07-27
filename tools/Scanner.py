@@ -16,13 +16,18 @@ def printProgressBar(iteration, total, prefix='', suffix='', decimals=1, length=
         print()
 
 
+# get company name by payload
+# payload example: 00:C2:00:00:D1:EF:00:00:00:7E
 def getCompanyName(payload):
     # logitech mouse movement packet
-    if len(payload) == 10 and payload[0] == 164 and payload[1] == 194:
+    if len(payload) == 10 and payload[0] == 0 and payload[1] == 194:
+        return 'logitech Mouse'
+    # logitech mouse movement packet
+    elif len(payload) == 10 and payload[0] == 164 and payload[1] == 194:
         return 'logitech Mouse'
 
     # logitech keystroke packet
-    elif len(payload) == 22 and payload[0] == 164 and payload[1] == 0xD3:
+    elif len(payload) == 22 and payload[0] == 0 and payload[1] == 0xD3:
         return 'logitech Keyboard or Mouse'
 
     # logitech keepalive packet
@@ -32,6 +37,10 @@ def getCompanyName(payload):
     # logitech sleep timer packet
     elif len(payload) == 10 and payload[0] == 0 and payload[1] == 0x4F:
         return 'logitech Keyboard or Mouse'
+
+    # lenovo
+    elif len(payload) == 1 and payload[0] == 7:
+        return "lenovo mouse or keyboard(encrypted cant attack)"
 
     # non-XOR encrypted Microsoft mouse
     elif len(payload) == 19 and (payload[0] == 0x08 or payload[0] == 0x0c) and payload[6] == 0x40:
@@ -76,7 +85,7 @@ def scan(radio, channels, timeout):
         printProgressBar(int(time.time() - start_time), timeout)
         print()
         print()
-        print("time to end: ",  (int(time.time() - start_time - timeout)) * -1, "seconds")
+        print("time to end: ", (int(time.time() - start_time - timeout)) * -1, "seconds")
 
         # change the channel
         if time.time() - last_tune > dwell_time:
@@ -93,6 +102,7 @@ def scan(radio, channels, timeout):
         if len(value) >= 5:
             address, payload = value[0:5], value[5:]
             address.reverse()
+            print(payload, address)
             devices[device_index] = []
             devices[device_index].append(address.tolist())
             devices[device_index].append(getCompanyName(payload.tolist()))
@@ -111,4 +121,3 @@ def deleteDuplicates(devices):
             temp.append(val[0])
             res[key] = val
     return res
-
