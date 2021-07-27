@@ -1,4 +1,4 @@
-from tools import Scanner, attacker
+from tools import Scanner
 from lib import nrf24, nrf24_reset, consolePrint
 import time
 import os
