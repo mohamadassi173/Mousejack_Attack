@@ -38,6 +38,7 @@ def getCompanyName(payload):
     elif len(payload) == 10 and payload[0] == 0 and payload[1] == 0x4F:
         return 'logitech Keyboard or Mouse'
 
+    # not tested
     # lenovo
     elif len(payload) == 1 and payload[0] == 7:
         return "lenovo mouse or keyboard(encrypted cant attack)"
@@ -93,7 +94,7 @@ def scan(radio, channels, timeout):
             channel_index = (channel_index + 1) % (len(channels))
             last_tune = time.time()
         try:
-            # search for payloads in specific channel
+            # search for payloads in specific channel-
             value = radio.receive_payload()  # received packet - 23:23:45:43:13,
         except RuntimeError:
             value = []
@@ -102,7 +103,7 @@ def scan(radio, channels, timeout):
         if len(value) >= 5:
             address, payload = value[0:5], value[5:]
             address.reverse()
-            print(payload, address)
+            # print(payload, address)
             devices[device_index] = []
             devices[device_index].append(address.tolist())
             devices[device_index].append(getCompanyName(payload.tolist()))

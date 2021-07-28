@@ -34,7 +34,7 @@ sudo pip install -U -I pip && sudo pip install -U -I pyusb
 TRANSMIT_PAYLOAD = 0x04
 ENTER_SNIFFER_MODE = 0x05
 ENTER_PROMISCUOUS_MODE = 0x06
-ENTER_TONE_TEST_MODE = 0x07
+ENTER_TONE_TEST_MODE = 0x07-
 TRANSMIT_ACK_PAYLOAD = 0x08
 SET_CHANNEL = 0x09
 GET_CHANNEL = 0x0A
@@ -77,16 +77,6 @@ class nrf24:
         else:
             logging.debug('Entered promiscuous mode')
 
-    # Put the radio in pseudo-promiscuous mode without CRC checking
-    def enter_promiscuous_mode_generic(self, prefix=[], rate=RF_RATE_2M):
-        self.send_usb_command(ENTER_PROMISCUOUS_MODE_GENERIC, [len(prefix), rate] + prefix)
-        self.dongle.read(0x81, 64, timeout=nrf24.usb_timeout)
-        if len(prefix) > 0:
-            logging.debug('Entered generic promiscuous mode with address prefix {0}'.format(
-                ':'.join('{:02X}'.format(b) for b in prefix)))
-        else:
-            logging.debug('Entered promiscuous mode')
-
     # Put the radio in ESB "sniffer" mode (ESB mode w/o auto-acking)
     def enter_sniffer_mode(self, address):
         self.send_usb_command(ENTER_SNIFFER_MODE, [len(address)] + address)
@@ -94,33 +84,15 @@ class nrf24:
         logging.debug(
             'Entered sniffer mode with address {0}'.format(':'.join('{:02X}'.format(b) for b in address[::-1])))
 
-    # Put the radio into continuous tone (TX) test mode
-    def enter_tone_test_mode(self):
-        self.send_usb_command(ENTER_TONE_TEST_MODE, [])
-        self.dongle.read(0x81, 64, timeout=nrf24.usb_timeout)
-        logging.debug('Entered continuous tone test mode')
-
     # Receive a payload if one is available
     def receive_payload(self):
         self.send_usb_command(RECEIVE_PAYLOAD, ())
         return self.dongle.read(0x81, 64, timeout=nrf24.usb_timeout)
 
-    # Transmit a generic (non-ESB) payload
-    def transmit_payload_generic(self, payload, address=[0x33, 0x33, 0x33, 0x33, 0x33]):
-        data = [len(payload), len(address)] + payload + address
-        self.send_usb_command(TRANSMIT_PAYLOAD_GENERIC, data)
-        return self.dongle.read(0x81, 64, timeout=nrf24.usb_timeout)[0] > 0
-
     # Transmit an ESB payload
     def transmit_payload(self, payload, timeout=4, retransmits=15):
         data = [len(payload), timeout, retransmits] + payload
         self.send_usb_command(TRANSMIT_PAYLOAD, data)
-        return self.dongle.read(0x81, 64, timeout=nrf24.usb_timeout)[0] > 0
-
-    # Transmit an ESB ACK payload
-    def transmit_ack_payload(self, payload):
-        data = [len(payload)] + payload
-        self.send_usb_command(TRANSMIT_ACK_PAYLOAD, data)
         return self.dongle.read(0x81, 64, timeout=nrf24.usb_timeout)[0] > 0
 
     # Set the RF channel
